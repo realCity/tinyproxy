@@ -19,7 +19,7 @@ FROM debian:jessie
 
 # Install dependencies only
 RUN    apt-get update \
-    && apt-get install -y $(apt-cache depends tinyproxy   | grep Depends | sed "s/.*ends:\ //" | tr '\n' ' ') \
+    && apt-get install -y bash $(apt-cache depends tinyproxy   | grep Depends | sed "s/.*ends:\ //" | tr '\n' ' ') \
     && rm -rf /var/lib/apt/lists/*
 
 RUN groupadd nobody
