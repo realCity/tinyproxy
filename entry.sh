@@ -67,6 +67,7 @@ if [ $# == 0  ] || [ "${1#-}" != "$1" ]             ##### in case of no argument
       chown -R nobody:nogroup /tmp
       echo "Config file:"
       cat /tmp/tinyproxy.conf
+      echo "Auth env: $(AUTH_USER) $(AUTH_PASS)"
       set -- tinyproxy -d -c /tmp/tinyproxy.conf
    fi
 
