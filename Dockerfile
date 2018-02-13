@@ -1,18 +1,36 @@
-FROM debian:jessie
-MAINTAINER r.gilles@telekom.de
+FROM debian:jessie as builder
+MAINTAINER david.varga@realcity.io
 
-RUN    apt-get update   \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y tinyproxy \
+# Install build environment for tinyproxy build
+RUN    apt-get update \
+    && apt-get install -y automake gcc make xsltproc bash asciidoc valgrind git \
     && rm -rf /var/lib/apt/lists/*
 
+WORKDIR /build
+
+RUN git clone https://github.com/tinyproxy/tinyproxy.git /build
+RUN  ./autogen.sh \
+  && ./configure \
+  && make \
+  && make install
+
+# Create separate final container for runtime dependencies
+FROM debian:jessie
+
+# Install dependencies only
+RUN    apt-get update \
+    && apt-get install -y $(apt-cache depends tinyproxy   | grep Depends | sed "s/.*ends:\ //" | tr '\n' ' ') \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd nobody
+
 COPY entry.sh entry.sh
+COPY --from=builder /usr/local/sbin/tinyproxy /usr/local/sbin/tinyproxy
+COPY --from=builder /usr/local/etc/tinyproxy /usr/local/etc/tinyproxy
+
+RUN     sed -i -e 's|^PidFile.*|PidFile "/tmp/tinyproxy.pid"|'       /usr/local/etc/tinyproxy/tinyproxy.conf \
+        && echo "Allow  0.0.0.0/0"                                >> /usr/local/etc/tinyproxy/tinyproxy.conf
+
 ENTRYPOINT ["/entry.sh"]
-
-RUN     sed -i -e 's|^Logfile.*|Logfile "/logs/tinyproxy.log"|; \
-                   s|^PidFile.*|PidFile "/logs/tinyproxy.pid"|'      /etc/tinyproxy.conf \
-        && echo "Allow  0.0.0.0/0"                                >> /etc/tinyproxy.conf
-
-RUN mkdir /logs
-VOLUME    /logs
 
 EXPOSE 8888

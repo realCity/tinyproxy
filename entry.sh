@@ -62,10 +62,10 @@ if [ $# == 0  ] || [ "${1#-}" != "$1" ]             ##### in case of no argument
                   *)  exitus 3 "wrong usage of this container -- '$1' is not an option";;
                esac
          done
-      egrep -iv "${optionsgrep%|}" /etc/tinyproxy.conf   > /logs/tinyproxy.conf
-      cat                          /tmp/tinyproxy.add   >> /logs/tinyproxy.conf
-      chown -R nobody:nogroup /logs
-      set -- tinyproxy -d -c /logs/tinyproxy.conf
+      egrep -iv "${optionsgrep%|}" /usr/local/etc/tinyproxy/tinyproxy.conf   > /tmp/tinyproxy.conf
+      cat                          /tmp/tinyproxy.add   >> /tmp/tinyproxy.conf
+      chown -R nobody:nogroup /tmp
+      set -- tinyproxy -d -c /tmp/tinyproxy.conf
    fi
 
 exec "$@"
