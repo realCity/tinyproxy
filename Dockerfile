@@ -24,9 +24,9 @@ RUN    apt-get update \
 
 RUN groupadd nobody
 
-COPY entry.sh entry.sh
 COPY --from=builder /usr/local/sbin/tinyproxy /usr/local/sbin/tinyproxy
 COPY --from=builder /usr/local/etc/tinyproxy /usr/local/etc/tinyproxy
+COPY entry.sh entry.sh
 
 RUN     sed -i -e 's|^PidFile.*|PidFile "/tmp/tinyproxy.pid"|'       /usr/local/etc/tinyproxy/tinyproxy.conf \
         && echo "Allow  0.0.0.0/0"                                >> /usr/local/etc/tinyproxy/tinyproxy.conf
