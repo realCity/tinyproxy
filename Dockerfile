@@ -24,7 +24,7 @@ RUN    apt-get update \
 
 RUN groupadd nobody
 
-COPY --from=builder /usr/local/sbin/tinyproxy /usr/local/sbin/tinyproxy
+COPY --from=builder /usr/local/bin/tinyproxy /usr/local/bin/tinyproxy
 COPY --from=builder /usr/local/etc/tinyproxy /usr/local/etc/tinyproxy
 COPY entry.sh entry.sh
 
