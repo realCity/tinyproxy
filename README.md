@@ -14,22 +14,22 @@ What can we do with such a tinyproxy? Beside the obvious use case "setup a stati
 
  * Following command line starts a tinyproxy container: named "tiny" that proxies all your data to the internet:
 
-        docker run -d --name tiny        dtgilles/tinyproxy
+        docker run -d --name tiny        realcity/tinyproxy
 
  * run the same container but mount log directory to specific local location:
 
         docker run -v /container/tinyproxy:/logs \
-               -d --name tiny   dtgilles/tinyproxy
+               -d --name tiny   realcity/tinyproxy
 
  * run the first container but filter requests by a given domain white list:
 
         docker run -v /container/tinyproxy.filter:/etc/tinyproxy.filter:ro \
-               -d --name tiny   dtgilles/tinyproxy
+               -d --name tiny   realcity/tinyproxy
 
  * but the main idea of this docker images is to enable you to set any configuration option you want -- just precede it (see man page for option list) with "-"; that's how it works:
 
         docker run -p           8888:8888 \
-               -d --name tiny   dtgilles/tinyproxy \
+               -d --name tiny   realcity/tinyproxy \
                -Allow           10.0.0.0/8 \
                -No Upstream     10.0.0.0/8 \
                -No Upstream     .internal.company.com \
